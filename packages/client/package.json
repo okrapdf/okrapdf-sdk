@@ -1,0 +1,43 @@
+{
+  "name": "@okrapdf/sdk",
+  "version": "0.1.0",
+  "description": "Official SDK for OkraPDF",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@okrapdf/refinery": "workspace:*"
+  },
+  "keywords": [
+    "okrapdf",
+    "sdk",
+    "pdf",
+    "ocr",
+    "ai"
+  ],
+  "author": "OkraPDF",
+  "license": "MIT",
+  "devDependencies": {
+    "tsup": "^8.0.0",
+    "typescript": "^5.0.0",
+    "vitest": "^1.0.0",
+    "@types/node": "^20.0.0"
+  }
+}
