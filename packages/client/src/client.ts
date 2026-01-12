@@ -2,22 +2,27 @@ import { ClientConfig, ApiError } from './types';
 import { DocumentsResource } from './resources/documents';
 import { ChatResource } from './resources/chat';
 import { ExtractionsResource } from './resources/extractions';
+import { OcrJobsResource } from './resources/ocr-jobs';
 
 export class OkraClient {
   private apiKey?: string;
   private baseUrl: string;
-  
+  public bucketName: string;
+
   public documents: DocumentsResource;
   public chat: ChatResource;
   public extractions: ExtractionsResource;
+  public ocrJobs: OcrJobsResource;
 
   constructor(config: ClientConfig = {}) {
     this.apiKey = config.apiKey || process.env.OKRA_API_KEY;
     this.baseUrl = config.baseUrl || 'https://app.okrapdf.com'; // Default production URL
-    
+    this.bucketName = config.bucketName || 'okrapdf';
+
     this.documents = new DocumentsResource(this);
     this.chat = new ChatResource(this);
     this.extractions = new ExtractionsResource(this);
+    this.ocrJobs = new OcrJobsResource(this);
   }
 
   public async fetch<T>(path: string, options: RequestInit = {}): Promise<T> {

@@ -1,0 +1,35 @@
+export {
+  extractionSlice,
+  setExtractionAdapter,
+  getExtractionAdapter,
+  initializeWorkspace,
+  startExtraction,
+  cancelExtraction,
+  setWorkspace,
+  clearWorkspace,
+  setProgress,
+  setTotalPages,
+  setStatus,
+  setError,
+  type ExtractionAdapter,
+  type ExtractionState,
+  type ExtractionStatus,
+  type ExtractionProgressEvent,
+  type PageContent,
+  type ExtractedTable,
+} from './slice';
+export { default as extractionReducer } from './slice';
+
+export {
+  selectExtractionState,
+  selectWorkspaceId,
+  selectWorkspacePath,
+  selectExtractionStatus,
+  selectExtractionProgress,
+  selectTotalPages,
+  selectExtractionError,
+  selectIsExtracting,
+  selectIsExtractionComplete,
+  selectExtractionPercentage,
+  selectHasWorkspace,
+} from './selectors';

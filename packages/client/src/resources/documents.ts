@@ -1,11 +1,30 @@
 import { OkraClient } from '../client';
-import { OkraDocument, UploadResponse } from '../types';
+import { OkraDocument, UploadResponse, DocumentOrJob, OcrJob } from '../types';
+import { isOcrJobId } from '@okrapdf/refinery';
 
 export class DocumentsResource {
   private client: OkraClient;
 
   constructor(client: OkraClient) {
     this.client = client;
+  }
+
+  /**
+   * Get a document or OCR job by ID.
+   * Automatically handles routing based on ID format (UUID vs 'ocr-').
+   *            Note: OkraDocument is being superseded by OcrJob.
+   */
+  async get(id: string): Promise<DocumentOrJob> {
+    if (isOcrJobId(id)) {
+      // It's a transient OCR job
+      // Assuming endpoint pattern /api/ocr-jobs/:id
+      // We might need to wrap the response to match DocumentOrJob if the API returns something different
+      // but for now let's assume it returns OcrJob
+      return this.client.fetch<OcrJob>(`/api/ocr-jobs/${id}`);
+    } else {
+      // It's a standard user document (deprecated)
+      return this.client.fetch<OkraDocument>(`/api/documents/${id}`);
+    }
   }
 
   /**
@@ -36,7 +55,7 @@ export class DocumentsResource {
     // The `signed-url` endpoint just signs what we give it. 
     // OK, let's generate a unique path.
     const uniqueId = Math.random().toString(36).substring(2, 15);
-    const gcsPath = `gs://okrapdf/uploads/${uniqueId}/${fileName}`;
+    const gcsPath = `gs://${this.client.bucketName}/uploads/${uniqueId}/${fileName}`;
     
     const { signedUrl } = await this.client.fetch<{ signedUrl: string }>('/api/gcs/signed-url', {
       method: 'POST',
