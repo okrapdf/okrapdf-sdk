@@ -1,0 +1,40 @@
+{
+  "name": "@okrapdf/plugin-text-extractor",
+  "version": "0.1.0",
+  "description": "PDF text extraction plugin using pdfjs-dist",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./manifest": {
+      "import": "./dist/manifest.mjs",
+      "require": "./dist/manifest.js",
+      "types": "./dist/manifest.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@okrapdf/plugin-types": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/react": "^18.0.0",
+    "react": "^18.0.0",
+    "tsup": "^8.5.1",
+    "typescript": "^5.0.0"
+  },
+  "peerDependencies": {
+    "react": ">=18.0.0"
+  },
+  "files": ["dist"],
+  "license": "MIT"
+}
