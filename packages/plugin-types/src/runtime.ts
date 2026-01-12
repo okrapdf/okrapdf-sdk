@@ -19,10 +19,14 @@ export interface BboxVertex {
   y: number;
 }
 
+function clamp(value: number, min = 0, max = 1): number {
+  return Math.max(min, Math.min(max, value));
+}
+
 export function bboxToVertices(
   bbox2d: [number, number, number, number],
 ): BboxVertex[] {
-  const [x1, y1, x2, y2] = bbox2d.map((v) => v / 1000);
+  const [x1, y1, x2, y2] = bbox2d.map((v) => clamp(v / 1000));
   return [
     { x: x1, y: y1 },
     { x: x2, y: y1 },
@@ -54,10 +58,10 @@ export function normalizeBbox(bbox: unknown): NormalizedBoundingBox | null {
     const [x1, y1, x2, y2] = bbox as number[];
     const scale = Math.max(x1, y1, x2, y2) > 1 ? 1000 : 1;
     return {
-      x: x1 / scale,
-      y: y1 / scale,
-      width: (x2 - x1) / scale,
-      height: (y2 - y1) / scale,
+      x: clamp(x1 / scale),
+      y: clamp(y1 / scale),
+      width: clamp((x2 - x1) / scale),
+      height: clamp((y2 - y1) / scale),
     };
   }
 
@@ -73,10 +77,10 @@ export function normalizeBbox(bbox: unknown): NormalizedBoundingBox | null {
       };
       const scale = Math.max(xmin, ymin, xmax, ymax) > 1 ? 1000 : 1;
       return {
-        x: xmin / scale,
-        y: ymin / scale,
-        width: (xmax - xmin) / scale,
-        height: (ymax - ymin) / scale,
+        x: clamp(xmin / scale),
+        y: clamp(ymin / scale),
+        width: clamp((xmax - xmin) / scale),
+        height: clamp((ymax - ymin) / scale),
       };
     }
 
@@ -87,10 +91,10 @@ export function normalizeBbox(bbox: unknown): NormalizedBoundingBox | null {
       const height = b.height as number;
       const scale = Math.max(x, y, x + width, y + height) > 1 ? 1000 : 1;
       return {
-        x: x / scale,
-        y: y / scale,
-        width: width / scale,
-        height: height / scale,
+        x: clamp(x / scale),
+        y: clamp(y / scale),
+        width: clamp(width / scale),
+        height: clamp(height / scale),
       };
     }
   }
