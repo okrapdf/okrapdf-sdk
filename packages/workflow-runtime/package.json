@@ -1,0 +1,38 @@
+{
+  "name": "@okrapdf/workflow-runtime",
+  "version": "0.1.0",
+  "description": "Generic workflow execution engine for OkraPDF",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "typecheck": "tsc --noEmit"
+  },
+  "peerDependencies": {
+    "@reduxjs/toolkit": ">=2.0.0",
+    "react": ">=18.0.0",
+    "react-redux": ">=9.0.0"
+  },
+  "dependencies": {
+    "@reduxjs/toolkit": "^2.5.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/react": "^18.0.0",
+    "react": "^18.0.0",
+    "react-redux": "^9.0.0",
+    "tsup": "^8.5.1",
+    "typescript": "^5.0.0"
+  },
+  "files": ["dist"],
+  "license": "MIT"
+}
