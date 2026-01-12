@@ -15,13 +15,25 @@
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",
     "tsup": "^8.5.1",
-    "typescript": "^5.0.0"
+    "typescript": "^5.0.0",
+    "vitest": "^4.0.16"
   },
-  "files": ["dist"],
-  "license": "MIT"
+  "files": [
+    "dist"
+  ],
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/okrapdf/okrapdf-sdk.git",
+    "directory": "packages/plugin-types"
+  }
 }

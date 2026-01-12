@@ -19,6 +19,13 @@ export interface BboxVertex {
   y: number;
 }
 
+export interface OverlayScale {
+  scaleX: number;
+  scaleY: number;
+  offsetX: number;
+  offsetY: number;
+}
+
 function clamp(value: number, min = 0, max = 1): number {
   return Math.max(min, Math.min(max, value));
 }
@@ -100,6 +107,34 @@ export function normalizeBbox(bbox: unknown): NormalizedBoundingBox | null {
   }
 
   return null;
+}
+
+export function getOverlayScaleFactors(
+  displayWidth: number,
+  displayHeight: number,
+  docDimensions?: { width: number | null; height: number | null } | null,
+): OverlayScale {
+  let scaleX = displayWidth;
+  let scaleY = displayHeight;
+  let offsetX = 0;
+  let offsetY = 0;
+
+  if (docDimensions?.width && docDimensions?.height) {
+    const docAspect = docDimensions.width / docDimensions.height;
+    const canvasAspect = displayWidth / displayHeight;
+
+    if (Math.abs(docAspect - canvasAspect) > 0.01) {
+      if (docAspect > canvasAspect) {
+        scaleY = displayWidth / docAspect;
+        offsetY = (displayHeight - scaleY) / 2;
+      } else {
+        scaleX = displayHeight * docAspect;
+        offsetX = (displayWidth - scaleX) / 2;
+      }
+    }
+  }
+
+  return { scaleX, scaleY, offsetX, offsetY };
 }
 
 export interface PageExtractionResult {
