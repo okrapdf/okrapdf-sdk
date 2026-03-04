@@ -69,7 +69,7 @@ console.log(res.choices[0].message.content);
 //    Certification), used by entities to collect a taxpayer's TIN..."
 ```
 
-## Use with Vercel AI SDK
+## Use with AI SDK
 
 ```ts
 import { createOpenAICompatible } from '@ai-sdk/openai-compatible';
@@ -189,13 +189,75 @@ d.pages(1).image({ w: 200, h: 300 }); // .../w_200,h_300/pg_1.png
 d.export('markdown');                  // .../export.md
 ```
 
-## Collections
+## Collections — Fan-Out Query to CSV
 
-Query across multiple documents:
+Ask the same question across every document in a collection. Each doc answers independently in parallel, results stream back as NDJSON.
 
 ```ts
-const collections = await okra.collections.list();
-const collection = await okra.collections.get('col-abc123');
+import { OkraClient } from 'okrapdf';
+import { z } from 'zod';
+import { writeFileSync } from 'fs';
+
+const okra = new OkraClient({ apiKey: process.env.OKRA_API_KEY });
+
+// Fan-out: ask every doc in the collection the same question
+const stream = okra.collections.query(
+  'col-40da068481cf4f248853507cba6be611',
+  'Who are the top 3 people mentioned in this document?',
+);
+
+// Gather all results
+const result = await stream.gather();
+
+// Write CSV
+const header = 'doc_id,doc_name,answer,cost_usd';
+const rows = [...result.answers.values()].map(a =>
+  `"${a.docId}","${a.answer.slice(0, 200)}",${a.costUsd}`
+);
+writeFileSync('results.csv', [header, ...rows].join('\n'));
+
+console.log(`${result.completed} docs, $${result.totalCostUsd.toFixed(4)} total`);
+```
+
+Real output from a 10-K earnings collection:
+
+```csv
+doc_id,file_name,answer,cost_usd
+"doc-9a3f21...","NVDA-10K-2025.pdf","Revenue: $130.5B, Net Income: $72.9B, YoY Growth: 114%",0.0048
+"doc-b7e810...","AAPL-10K-2025.pdf","Revenue: $391.0B, Net Income: $101.2B, YoY Growth: 5%",0.0039
+"doc-c4d562...","MSFT-10K-2025.pdf","Revenue: $254.2B, Net Income: $97.1B, YoY Growth: 16%",0.0051
+```
+
+Works with structured output too — pass a Zod schema and each doc extracts typed data:
+
+```ts
+const FinancialReport = z.object({
+  company: z.string(),
+  revenue: z.number(),
+  netIncome: z.number(),
+  quarter: z.string(),
+});
+
+const stream = okra.collections.query(
+  'col-financials',
+  'Extract the financial summary',
+  { schema: FinancialReport },
+);
+
+const result = await stream.gather();
+for (const [docId, answer] of result.answers) {
+  console.log(answer.data); // { company: "NVIDIA", revenue: 35082, ... }
+}
+```
+
+Or stream per-doc events in real time:
+
+```ts
+for await (const event of stream) {
+  if (event.type === 'result') {
+    console.log(`${event.doc_id}: ${event.answer.slice(0, 80)}...`);
+  }
+}
 ```
 
 ## Sub-path Exports
