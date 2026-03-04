@@ -6,6 +6,8 @@ Upload a PDF, get an OpenAI-compatible endpoint.
 npm install okrapdf
 ```
 
+Get your API key at [okrapdf.com/dashboard](https://okrapdf.com/dashboard).
+
 ## Quick Start
 
 Every document gets its own `/chat/completions` URL. Use it with the OpenAI SDK, Vercel AI SDK, LangChain, or plain `fetch`.
